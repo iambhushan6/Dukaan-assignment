@@ -67,15 +67,21 @@ class StoreCreateSerializer(serializers.ModelSerializer):
         fields = [
             'storename',
             'address',
+            'id'
         ]
 
-    def validate(self, attrs,request):
+class ProductCreateSerializer(serializers.ModelSerializer):
 
-        storename = attrs.get('storename','')
+    class Meta:
+        model = models.Product
+        fields = [
+            "store",
+            "category",
+            "productname",
+            "description",
+            "mrp",
+            "saleprice",
+            "image",
+            "id"
+        ]
 
-        currentlink = get_current_site(request=request).domain
-        storelink = 'http://'+currentlink + storename
-        return { 
-            # 'id': user.id,  
-            'storelink': storelink
-        }

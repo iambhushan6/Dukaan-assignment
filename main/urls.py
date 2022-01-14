@@ -10,6 +10,8 @@ urlpatterns = [
 
     path('dukaan/register', views.RegisterUser.as_view(), name='register'),
 
-    path('dukaan/store', views.StoreCreateAPIView.as_view(), name='storecreate')
-    
+    path('dukaan/store', views.StoreCreateAPIView.as_view(), name='storecreate'),
+
+    path('dukaan/product', views.ProductCreateAPIView.as_view(), name='productcreate')
+
 ]

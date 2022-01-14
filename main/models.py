@@ -70,7 +70,7 @@ class Store(models.Model):
 
     def __str__(self):
         return self.storename
-
+        
 
 class Category(models.Model):
 
