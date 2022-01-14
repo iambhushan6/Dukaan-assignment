@@ -21,7 +21,7 @@ class UserManager(BaseUserManager):
         if phone is None:
             raise TypeError("User should have an mobile no!")
 
-        user = self.model( username=username, phone=phone, )
+        user = self.model( username=username, phone=phone )
         user.set_password(password)
         user.save()
         return user

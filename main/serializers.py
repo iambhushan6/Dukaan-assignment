@@ -1,9 +1,11 @@
+from re import I
 from django.contrib import auth
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
 from main import models
 from django.contrib.auth import get_user_model
 from django.contrib.sites.shortcuts import get_current_site
+
 
 
 
@@ -35,27 +37,27 @@ class LoginSerializer(serializers.ModelSerializer):
 
     phone = serializers.CharField()
     password = serializers.CharField(max_length = 68, min_length = 6, write_only = True)
-    username = serializers.CharField(max_length = 255, min_length = 3, read_only = True)
     authToken = serializers.CharField(max_length = 68, min_length = 6, read_only=True)
 
 
     class Meta:
         model = models.User
-        fields = ['phone', 'password', 'username', 'authToken', 'is_staff', 'is_active', 'is_superuser']
+        fields = ['phone', 'password', 'authToken']
 
     def validate(self, attrs):
         phone = attrs.get('phone','')
         password = attrs.get('password','')
-
-        user = auth.authenticate(phone= phone, password= password)
+        user = auth.authenticate( phone= phone, password= password)
 
         if not user:
             raise AuthenticationFailed("Invalid Credentials")
 
-        return {
-            # 'id': user.id,  
+        return {  
+            "phone": user.phone,
+            # "username": user.username,
             'authToken': user.tokens
         }
+        return super().validate(attrs)
 
 
 class StoreCreateSerializer(serializers.ModelSerializer):
@@ -73,7 +75,7 @@ class StoreCreateSerializer(serializers.ModelSerializer):
 
         currentlink = get_current_site(request=request).domain
         storelink = 'http://'+currentlink + storename
-        return {
+        return { 
             # 'id': user.id,  
             'storelink': storelink
         }
