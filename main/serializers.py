@@ -62,19 +62,35 @@ class LoginSerializer(serializers.ModelSerializer):
 
 class StoreCreateSerializer(serializers.ModelSerializer):
 
+    # storenameis = serializers.CharField(max_length = 68, min_length = 1, read_only=True)
+
+
     class Meta:
         model = models.Store
         fields = [
             'storename',
             'address',
             'id'
+            # 'storenameis'
         ]
+        # fields = '__all__'
+
+    def validate(self, data):
+        storename = data['storename']
+        if storename != storename.replace(' ',''):
+            raise serializers.ValidationError("Storename should have no spaces between them.")
+        else:
+            return data
+
 
 class ProductCreateSerializer(serializers.ModelSerializer):
+
+    storeinfo = serializers.SerializerMethodField('getstoreinfo')
 
     class Meta:
         model = models.Product
         fields = [
+            "storeinfo",
             "store",
             "category",
             "productname",
@@ -84,4 +100,49 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             "image",
             "id"
         ]
+
+    def getstoreinfo(self, instance):
+
+        storeinfo = instance.store.id, instance.store.storename, instance.store.address
+
+        return storeinfo
+
+
+class CartCreateSerializer(serializers.ModelSerializer):
+
+    productinfo = serializers.SerializerMethodField('getproductinfo')
+
+    class Meta:
+        model = models.Cart
+        fields = [
+            "productinfo",
+            "product",
+            "quantity"
+        ]
+
+    def getproductinfo(self, instance):
+
+        productinfo =  instance.product.productname, instance.product.image, instance.product.saleprice
+
+        return productinfo
+
+
+class OrderCreateSerializer(serializers.ModelSerializer):
+
+    storeinfo = serializers.SerializerMethodField('getstoreinfo')
+
+    class Meta:
+        model = models.Order
+        fields = [
+            "store",
+            "product",
+            "storeinfo"
+        ]
+
+    def getstoreinfo(self, instance):
+
+        storeinfo = instance.store.id, instance.store.storename, instance.store.address
+
+        return storeinfo
+
 

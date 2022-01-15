@@ -65,12 +65,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Store(models.Model):
 
     owner = models.ForeignKey(User, on_delete= models.CASCADE)
-    storename = models.CharField(max_length=56)
+    storename = models.CharField(max_length=56, unique= True, null= False, blank= False)
     address = models.CharField(max_length=256)
 
     def __str__(self):
         return self.storename
-        
+
 
 class Category(models.Model):
 
@@ -108,6 +108,7 @@ class Cart(models.Model):
 
     owner = models.ForeignKey(User, on_delete= models.CASCADE)
     product = models.ForeignKey(Product, on_delete= models.CASCADE)
+    quantity = models.IntegerField()
 
     def __str__(self):
         return self.owner.username
